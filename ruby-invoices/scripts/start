@@ -3,6 +3,7 @@ require 'bundler'
 Bundler.require
 
 require_relative '../providers/clients'
+require_relative '../providers/invoices'
 
 host = ENV["RABBIT_HOST"] || 'localhost'
 port = ENV["RABBIT_PORT"] || 5672
@@ -14,15 +15,21 @@ sleep 5 # give rabbitmq time to get up
 
 conn = Bunny.new("amqp://#{user}:#{password}@#{host}:#{port}")
 conn.start
-
-ch = conn.create_channel
+conn.start
 
 begin
-  server = Providers::Clients.new(ch)
+
+  ch1 = conn.create_channel
+  ch2 = conn.create_channel
+  Thread.new{ Providers::Clients.new(ch1).start  } 
+  Thread.new{ Providers::Invoices.new(ch2).start  } 
+
   puts " [x] Awaiting RPC requests"
-  server.start
+  sleep 
+  
 rescue Interrupt => _
-  ch.close
+  ch1.close
+  ch2.close
   conn.close
 
   exit(0)
