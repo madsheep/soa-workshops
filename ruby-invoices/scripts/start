@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+require 'bundler'
+Bundler.require
+
+require_relative '../providers/clients'
+
+host = ENV["RABBIT_HOST"] || 'localhost'
+port = ENV["RABBIT_PORT"] || 5672
+user = ENV["RABBIT_USER"] || 'guest'
+password = ENV["RABBIT_PASSWORD"] || 'guest'
+
+puts "Starting up service..."
+sleep 5 # give rabbitmq time to get up
+
+conn = Bunny.new("amqp://#{user}:#{password}@#{host}:#{port}")
+conn.start
+
+ch = conn.create_channel
+
+begin
+  server = Providers::Clients.new(ch)
+  puts " [x] Awaiting RPC requests"
+  server.start
+rescue Interrupt => _
+  ch.close
+  conn.close
+
+  exit(0)
+end
