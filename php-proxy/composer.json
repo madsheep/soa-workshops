@@ -1,0 +1,17 @@
+{
+    "name": "tomas/php-proxy",
+    "authors": [
+        {
+            "name": "Tomasz Sadza",
+            "email": "tomasz@spj.com.pl"
+        }
+    ],
+    "require": {
+        "php-amqplib/php-amqplib": "^2.6"
+    },
+    "autoload": {
+        "classmap": [
+            "class/"
+        ]
+    }
+}

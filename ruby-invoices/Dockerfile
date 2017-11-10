@@ -24,4 +24,4 @@ WORKDIR /home/deploy/app
 RUN bundle --deployment --path=~/bundle
 
 # start service
-CMD [ "bundle", "exec", "script/start"]
+CMD [ "bundle", "exec", "scripts/start"]
