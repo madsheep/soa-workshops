@@ -5,7 +5,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class PhpProxy {
 
-private $connection;
+    private $connection;
     private $channel;
     private $callback_queue;
     private $response;
