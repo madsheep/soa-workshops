@@ -1,15 +1,31 @@
 version: "2"
 
 services:
-      
+
   rabbitmq:
     image: rabbitmq:3.6.9-management
     ports:
       - 5672:5672
-      
+
   ruby-invoices:
     build: ./ruby-invoices
     environment:
       - RABBIT_HOST=rabbitmq
     depends_on:
       - rabbitmq
+
+  elixir-auth:
+    build: ./elixir-auth
+    environment:
+      - RABBIT_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+
+  php-proxy:
+    build: ./php-proxy
+    environment:
+      - RABBIT_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+    ports:
+      - 8001:8000
